@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, \
     BaseUserManager, PermissionsMixin
+import calendar
 
 
 class UserManager(BaseUserManager):
@@ -23,7 +24,6 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model supports using email instead of username"""
 
@@ -33,6 +33,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     username = models.CharField(
         max_length=255, unique=True, null=True, blank=True)
+    fav_month = models.CharField("What is your Favorite Month", max_length=255, null=True,
+                                 blank=True,
+                                 choices=[(str(i), calendar.month_name[i])
+                                          for i in range(1, 13)],
+                                 default=calendar.month_name[1])
+    family_status = models.BooleanField(default=False)
 
     objects = UserManager()
 

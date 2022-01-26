@@ -2,16 +2,33 @@ version: '3'
 
 services:
   app:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
-
     ports:
       - "8000:8000"
     volumes:
       - ./app:/app
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
-      
+      sh -c "python manage.py wait_for_db && 
+      python manage.py migrate && 
+      python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST=db
+      - DB_USER=postgres
+      - DB_PASSWORD=supersecretpassword
+      - DB_NAME=app
+
+    depends_on:
+      - db
     restart: always
 
+  db:
+    image: postgres
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=supersecretpassword
+      - POSTGRES_DB=app
+    restart: always
