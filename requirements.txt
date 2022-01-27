@@ -3,3 +3,4 @@ djangorestframework==3.13.1
 flake8==4.0.1
 psycopg2==2.8.5
 django-multiselectfield==0.1.12
+Pillow==9.0.0
